@@ -4,15 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.context.annotation.EnableMBeanExport;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 
-@Entity(name = "users")
+@Entity
 @Table(name = "users")
 @Getter
 @Setter
