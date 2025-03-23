@@ -11,13 +11,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "Tags")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Category {
+public class Tag {
 
     @Id
     @UuidGenerator
@@ -29,8 +29,8 @@ public class Category {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return Objects.equals(id, category.id) && Objects.equals(name, category.name);
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id) && Objects.equals(name, tag.name);
     }
 
     @Override
