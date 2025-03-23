@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserEntity {
+public class User {
 
     @Id
     @UuidGenerator
@@ -33,13 +35,16 @@ public class UserEntity {
     @Column(nullable = false)
     private String name;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post>  posts = new ArrayList<>();
+
     @Column(nullable = false)
     private LocalDateTime createAt;
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
+        User that = (User) o;
         return Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(name, that.name) && Objects.equals(createAt, that.createAt);
     }
 

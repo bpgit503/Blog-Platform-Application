@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Posts {
+public class Post {
 
     @Id
     @UuidGenerator
@@ -28,6 +28,11 @@ public class Posts {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -45,7 +50,7 @@ public class Posts {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Posts posts = (Posts) o;
+        Post posts = (Post) o;
         return Objects.equals(id, posts.id) && Objects.equals(title, posts.title) && Objects.equals(content, posts.content) && status == posts.status && Objects.equals(readingTime, posts.readingTime) && Objects.equals(createAt, posts.createAt) && Objects.equals(updateAt, posts.updateAt);
     }
 
