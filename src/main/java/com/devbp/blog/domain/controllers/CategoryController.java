@@ -1,14 +1,15 @@
 package com.devbp.blog.domain.controllers;
 
 import com.devbp.blog.domain.dtos.CategoryDto;
-import com.devbp.blog.domain.repositories.CategoryRepository;
+import com.devbp.blog.domain.dtos.CreateCategoryRequest;
+import com.devbp.blog.domain.entities.Category;
 import com.devbp.blog.domain.services.CategoryService;
 import com.devbp.blog.mappers.CategoryMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 @RequestMapping(path = "/api/v1/categories")
 @RequiredArgsConstructor
 public class CategoryController {
+
+    public static final String CATEGORY_PATH_ID = "/api/v1/categories";
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
@@ -29,4 +32,15 @@ public class CategoryController {
 
         return ResponseEntity.ok(categories);
     }
+
+
+    @PostMapping
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CreateCategoryRequest createCategoryRequest) {
+
+        Category category = categoryService.createCategory(categoryMapper.toEntity(createCategoryRequest));
+
+        return new ResponseEntity<>(categoryMapper.toDto(category), HttpStatus.CREATED);
+    }
+
+
 }
