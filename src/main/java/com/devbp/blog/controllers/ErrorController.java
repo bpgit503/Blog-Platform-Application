@@ -1,4 +1,4 @@
-package com.devbp.blog.domain.controllers;
+package com.devbp.blog.controllers;
 
 import com.devbp.blog.domain.dtos.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
