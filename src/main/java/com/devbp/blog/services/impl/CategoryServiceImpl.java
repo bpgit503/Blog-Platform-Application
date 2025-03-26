@@ -1,8 +1,8 @@
-package com.devbp.blog.domain.services.impl;
+package com.devbp.blog.services.impl;
 
 import com.devbp.blog.domain.entities.Category;
-import com.devbp.blog.domain.repositories.CategoryRepository;
-import com.devbp.blog.domain.services.CategoryService;
+import com.devbp.blog.repositories.CategoryRepository;
+import com.devbp.blog.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

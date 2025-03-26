@@ -1,4 +1,4 @@
-package com.devbp.blog.domain.services;
+package com.devbp.blog.services;
 
 import com.devbp.blog.domain.entities.Category;
 

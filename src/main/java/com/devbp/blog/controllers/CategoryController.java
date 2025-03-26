@@ -3,7 +3,7 @@ package com.devbp.blog.controllers;
 import com.devbp.blog.domain.dtos.CategoryDto;
 import com.devbp.blog.domain.dtos.CreateCategoryRequest;
 import com.devbp.blog.domain.entities.Category;
-import com.devbp.blog.domain.services.CategoryService;
+import com.devbp.blog.services.CategoryService;
 import com.devbp.blog.mappers.CategoryMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
