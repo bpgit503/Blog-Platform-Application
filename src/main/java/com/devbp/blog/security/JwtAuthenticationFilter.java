@@ -29,22 +29,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token != null) {
                 UserDetails userDetails = authenticationService.validateToken(token);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 if (userDetails instanceof BlogUserDetails) {
-                    request.setAttribute("userID", ((BlogUserDetails) userDetails).getId());
+                    request.setAttribute("userId", ((BlogUserDetails) userDetails).getId());
                 }
 
             }
         } catch (Exception ex) {
             //Do not throe exceptions, just don't authenticate user
-            log.warn("Recieved invalid auth token");
+            log.warn("Received invalid auth token");
         }
         filterChain.doFilter(request, response);
-
-
     }
 
     private String extractToken(HttpServletRequest request) {
