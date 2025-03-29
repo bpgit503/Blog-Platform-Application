@@ -3,10 +3,12 @@ package com.devbp.blog.services.impl;
 import com.devbp.blog.domain.entities.Category;
 import com.devbp.blog.repositories.CategoryRepository;
 import com.devbp.blog.services.CategoryService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,10 +39,15 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(UUID id) {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isPresent()) {
-            if(!category.get().getPosts().isEmpty()) {
+            if (!category.get().getPosts().isEmpty()) {
                 throw new IllegalStateException("Category has posts associated with it");
             }
             categoryRepository.delete(category.get());
         }
+    }
+
+    @Override
+    public Category getCategory(UUID id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Category not found with id:  " + id));
     }
 }
