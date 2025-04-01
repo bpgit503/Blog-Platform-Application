@@ -19,8 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    public static final String CATEGORY_PATH_ID = "/api/v1/categories";
-
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 

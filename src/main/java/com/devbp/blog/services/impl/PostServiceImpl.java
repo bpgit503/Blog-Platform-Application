@@ -1,9 +1,11 @@
 package com.devbp.blog.services.impl;
 
+import com.devbp.blog.domain.CreatePostRequest;
 import com.devbp.blog.domain.PostStatus;
 import com.devbp.blog.domain.entities.Category;
 import com.devbp.blog.domain.entities.Post;
 import com.devbp.blog.domain.entities.Tag;
+import com.devbp.blog.domain.entities.User;
 import com.devbp.blog.repositories.PostRepository;
 import com.devbp.blog.services.CategoryService;
 import com.devbp.blog.services.PostService;
@@ -12,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -23,17 +27,19 @@ public class PostServiceImpl implements PostService {
     private final CategoryService categoryService;
     private final TagService tagService;
 
+    private static final  int WORDS_PER_MINUTE = 200;
+
     @Transactional(readOnly = true)
     @Override
     public List<Post> getAllPosts(UUID categoryId, UUID tagId) {
 
         if (categoryId != null && tagId != null) {
-            Category category = categoryService.getCategory(categoryId);
+            Category category = categoryService.getCategoryByID(categoryId);
             Tag tag = tagService.getTag(tagId);
             return postRepository.findAllByStatusAndCategoryAndTagsContaining(PostStatus.PUBLISHED,  category, tag);
         }
         if (categoryId != null) {
-            Category category = categoryService.getCategory(categoryId);
+            Category category = categoryService.getCategoryByID(categoryId);
             return postRepository.findAllByStatusAndCategory(PostStatus.PUBLISHED,  category);
         }
         if (tagId != null) {
@@ -42,6 +48,41 @@ public class PostServiceImpl implements PostService {
         }
 
         return postRepository.findAllByStatus(PostStatus.PUBLISHED);
+
+    }
+
+    @Override
+    public List<Post> getDraftPosts(User user) {
+        return postRepository.findAllByAuthorAndStatus(user, PostStatus.DRAFT);
+    }
+
+    @Transactional
+    @Override
+    public Post createPost(User user, CreatePostRequest createPostRequest) {
+        Post newPost = new Post();
+        newPost.setTitle(createPostRequest.getTitle());
+        newPost.setContent(createPostRequest.getContent());
+        newPost.setStatus(createPostRequest.getStatus());
+        newPost.setAuthor(user);
+        newPost.setReadingTime(calculateReadingTime(createPostRequest.getContent()));
+
+        Category category = categoryService.getCategoryByID(createPostRequest.getCategoryId());
+        newPost.setCategory(category);
+
+        Set<UUID> tagIds = createPostRequest.getTagIds();
+        List<Tag> tags = tagService.getTagsByID(tagIds);
+        newPost.setTags(new HashSet<>(tags));
+
+        return postRepository.save(newPost);
+    }
+
+    private Integer calculateReadingTime(String content) {
+        if(content == null || content.isEmpty()) {
+            return 0;
+        }
+
+        int wordCount = content.trim().split("\\s").length;
+        return (int) Math.ceil((double) wordCount / WORDS_PER_MINUTE);
 
     }
 }
