@@ -30,11 +30,11 @@ public class PostServiceImpl implements PostService {
     private final CategoryService categoryService;
     private final TagService tagService;
 
-    private static final  int WORDS_PER_MINUTE = 200;
+    private static final int WORDS_PER_MINUTE = 200;
 
     @Override
     public Post getPost(UUID id) {
-       return postRepository.findById(id).orElseThrow(() ->  new EntityNotFoundException("Post does not exist with ID: " + id));
+        return postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post does not exist with ID: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -44,15 +44,15 @@ public class PostServiceImpl implements PostService {
         if (categoryId != null && tagId != null) {
             Category category = categoryService.getCategoryByID(categoryId);
             Tag tag = tagService.getTag(tagId);
-            return postRepository.findAllByStatusAndCategoryAndTagsContaining(PostStatus.PUBLISHED,  category, tag);
+            return postRepository.findAllByStatusAndCategoryAndTagsContaining(PostStatus.PUBLISHED, category, tag);
         }
         if (categoryId != null) {
             Category category = categoryService.getCategoryByID(categoryId);
-            return postRepository.findAllByStatusAndCategory(PostStatus.PUBLISHED,  category);
+            return postRepository.findAllByStatusAndCategory(PostStatus.PUBLISHED, category);
         }
         if (tagId != null) {
             Tag tag = tagService.getTag(tagId);
-            return postRepository.findAllByStatusAndTagsContaining(PostStatus.PUBLISHED,  tag);
+            return postRepository.findAllByStatusAndTagsContaining(PostStatus.PUBLISHED, tag);
         }
 
         return postRepository.findAllByStatus(PostStatus.PUBLISHED);
@@ -96,14 +96,14 @@ public class PostServiceImpl implements PostService {
         exsistingPost.setReadingTime(calculateReadingTime(postContent));
 
         UUID updatedPostCategoryId = updatePostRequest.getCategoryId();
-        if(!exsistingPost.getCategory().getId().equals(updatedPostCategoryId)) {
+        if (!exsistingPost.getCategory().getId().equals(updatedPostCategoryId)) {
             Category newCategory = categoryService.getCategoryByID(updatedPostCategoryId);
             exsistingPost.setCategory(newCategory);
         }
 
         Set<UUID> exsitingTags = exsistingPost.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
         Set<UUID> updatePostRequestTagIds = updatePostRequest.getTagIds();
-        if(!exsitingTags.equals(updatePostRequestTagIds)) {
+        if (!exsitingTags.equals(updatePostRequestTagIds)) {
             List<Tag> newTags = tagService.getTagsByID(updatePostRequestTagIds);
             exsistingPost.setTags(new HashSet<>(newTags));
         }
@@ -111,8 +111,13 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Override
+    public void deletePost(UUID id) {
+        postRepository.delete(getPost(id));
+    }
+
     private Integer calculateReadingTime(String content) {
-        if(content == null || content.isEmpty()) {
+        if (content == null || content.isEmpty()) {
             return 0;
         }
 
