@@ -1,13 +1,16 @@
 package com.devbp.blog.controllers;
 
 import com.devbp.blog.domain.CreatePostRequest;
+import com.devbp.blog.domain.UpdatePostRequest;
 import com.devbp.blog.domain.dtos.CreatePostRequestDto;
 import com.devbp.blog.domain.dtos.PostDto;
+import com.devbp.blog.domain.dtos.UpdatePostRequestDto;
 import com.devbp.blog.domain.entities.Post;
 import com.devbp.blog.domain.entities.User;
 import com.devbp.blog.mappers.PostMapper;
 import com.devbp.blog.services.PostService;
 import com.devbp.blog.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +47,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody CreatePostRequestDto createPostRequestDto, @RequestAttribute UUID userId) {
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody CreatePostRequestDto createPostRequestDto, @RequestAttribute UUID userId) {
         User loggedInUser = userService.getUserById(userId);
 
         CreatePostRequest createPostRequest = postMapper.toCreatePostRequestDto(createPostRequestDto);
@@ -52,5 +55,12 @@ public class PostController {
         PostDto createdPostDto = postMapper.toDto(postService.createPost(loggedInUser, createPostRequest));
 
         return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<PostDto> updatePost(@PathVariable UUID id, @Valid @RequestBody UpdatePostRequestDto updatePostRequestDto){
+        UpdatePostRequest updatePostRequest = postMapper.toUpdatePostRequest(updatePostRequestDto);
+        PostDto updatePostDto = postMapper.toDto(postService.updatePost(id, updatePostRequest));
+        return ResponseEntity.ok(updatePostDto);
     }
 }

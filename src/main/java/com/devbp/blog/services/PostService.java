@@ -1,6 +1,8 @@
 package com.devbp.blog.services;
 
 import com.devbp.blog.domain.CreatePostRequest;
+import com.devbp.blog.domain.UpdatePostRequest;
+import com.devbp.blog.domain.dtos.UpdatePostRequestDto;
 import com.devbp.blog.domain.entities.Post;
 import com.devbp.blog.domain.entities.User;
 
@@ -11,4 +13,5 @@ public interface PostService {
     List<Post> getAllPosts(UUID categoryId, UUID tagId);
     List<Post> getDraftPosts(User user);
     Post createPost(User user, CreatePostRequest createPostRequestDto);
+    Post updatePost(UUID id, UpdatePostRequest updatePostRequest);
 }
